@@ -40,11 +40,11 @@ export const AuthContextProvider = ({
 			});
 		}else{
 			logout();
-			router.push("/login")
 		}
 	};
 	const logout = async () => {
 		setAuthContext(initialState);
+		router.push("/login");
 	};
 	const value = {
 		authContext,

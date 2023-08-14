@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import Drawer from "./Drawer";
 import SiderBar from "./SiderBar";
@@ -9,12 +9,10 @@ import { useRouter } from "next/navigation";
 
 export default function Header({ children }: any) {
 	const [isOpen, setIsOpen] = useState(false);
-	const {logout} = useAuthContext()
-	const router = useRouter()
-	const logoutUser = () =>{
+	const { logout } = useAuthContext();
+	const logoutUser = () => {
 		logout();
-		router.push("/login")
-	}
+	};
 	return (
 		<main className="bg-base-200 min-h-screen">
 			<nav>
