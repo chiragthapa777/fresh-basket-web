@@ -6,11 +6,13 @@ import { MdMenu } from "react-icons/md";
 import { MdPerson, MdOutlineLogout } from "react-icons/md";
 import { useAuthContext } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import { deleteCookie } from "cookies-next";
 
 export default function Header({ children }: any) {
 	const [isOpen, setIsOpen] = useState(false);
 	const { logout } = useAuthContext();
 	const logoutUser = () => {
+		deleteCookie("token")
 		logout();
 	};
 	return (

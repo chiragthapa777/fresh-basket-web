@@ -2,7 +2,7 @@
 
 import { AuthContextDataType } from "@/models/AuthContextType";
 import React, { createContext, useContext, useState } from "react";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 
 const initialState: AuthContextDataType = {
@@ -30,16 +30,23 @@ export const AuthContextProvider = ({
 	const router = useRouter()
 	const [authContext, setAuthContext] =
 		useState<AuthContextDataType>(initialState);
-	const login = async () => {};
+	const login = async () => {
+		setCookie("token", "test");
+		await loadUser();
+		router.push("/");
+		console.log("--------------------")
+	};
 	const loadUser = async () => {
-		const token = getCookie("token");
-		if (token) {
-			setAuthContext((prev: AuthContextDataType) => {
-				prev.authenticated = true;
-				return prev;
-			});
-		}else{
-			logout();
+		if(!authContext.authenticated){
+			const token = getCookie("token");
+			if (token) {
+				setAuthContext((prev: AuthContextDataType) => {
+					prev.authenticated = true;
+					return prev;
+				});
+			}else{
+				logout();
+			}
 		}
 	};
 	const logout = async () => {

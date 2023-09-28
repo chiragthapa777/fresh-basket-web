@@ -1,0 +1,4 @@
+{
+    "window.titleSeparator": "->",
+    "window.title": "${rootName}${separator}${activeEditorShort}"
+}

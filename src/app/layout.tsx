@@ -1,11 +1,9 @@
 "use client";
 import { AuthContextProvider } from "@/contexts/AuthContext";
-import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { useEffect } from "react";
-import {  ModalProvider } from "@/contexts/ModalContext";
-import Modal from "@/components/Modal";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,12 +25,7 @@ export default function RootLayout({
 	return (
 		<html lang="en" data-theme="light">
 			<body className={inter.className}>
-				<AuthContextProvider>
-					<ModalProvider>
-						<Modal />
-						{children}
-					</ModalProvider>
-				</AuthContextProvider>
+				<AuthContextProvider>{children}</AuthContextProvider>
 			</body>
 		</html>
 	);

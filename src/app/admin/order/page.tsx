@@ -1,5 +1,5 @@
 "use client";
-import { useModal } from "@/contexts/ModalContext";
+import withAuth from "@/hoc/withAuth";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import {
@@ -8,13 +8,9 @@ import {
 	MdModeEditOutline,
 } from "react-icons/md";
 
-export default function page() {
+function page() {
 	const router = useRouter();
 	const [result, setresult] = useState(null)
-	const {openModal} = useModal();
-	const edit = () =>{
-		// openModal(<ProductFrom />, setresult);
-	}
 
 	useEffect(() => {
 	  console.log(result)
@@ -73,7 +69,7 @@ export default function page() {
 									<td>Quality Control Specialist</td>
 									<td>Blue</td>
 									<td>
-										<div className="btn btn-success btn-xs btn-outline" onClick={edit}>
+										<div className="btn btn-success btn-xs btn-outline" >
 											<MdModeEditOutline />
 										</div>
 									</td>
@@ -102,3 +98,5 @@ export default function page() {
 		</div>
 	);
 }
+
+export default withAuth(page, { role: "admin" });

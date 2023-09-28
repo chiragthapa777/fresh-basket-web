@@ -10,16 +10,6 @@ import {
 
 export default function page() {
 	const router = useRouter();
-	const [result, setresult] = useState(null)
-	const {openModal} = useModal();
-	const edit = () =>{
-		// openModal(<ProductFrom />, setresult);
-	}
-
-	useEffect(() => {
-	  console.log(result)
-	}, [result])
-	
 	return (
 		<div>
 			<div className="flex">
@@ -80,7 +70,6 @@ export default function page() {
 									<td>
 										<div
 											className="btn btn-success btn-xs btn-outline"
-											onClick={edit}
 										>
 											<MdModeEditOutline />
 										</div>
