@@ -1,5 +1,4 @@
 "use client";
-import { useModal } from "@/contexts/ModalContext";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import {
@@ -8,13 +7,15 @@ import {
 	MdModeEditOutline,
 } from "react-icons/md";
 import ProductFrom from "./ProductFrom";
+import Modal from "@/components/Modal";
 
 export default function page() {
 	const router = useRouter();
 	const [result, setresult] = useState(null)
-	const {openModal} = useModal();
-	const edit = () =>{
-		// openModal(<ProductFrom />, setresult);
+	const [isOpen, setisOpen] = useState(false)
+	const edit = (id:number) =>{
+		setisOpen(true)
+		// router.push(`/product/edit/${id}`)
 	}
 
 	useEffect(() => {
@@ -23,6 +24,14 @@ export default function page() {
 	
 	return (
 		<div>
+			<Modal
+				isOpen={isOpen}
+				onClose={() => {
+					setisOpen(false);
+				}}
+			>
+				<ProductFrom />
+			</Modal>
 			<div className="flex">
 				<button
 					className="btn btn-xs btn-link capitalize my-auto"
@@ -43,12 +52,16 @@ export default function page() {
 					</ul>
 				</div>
 			</div>
-
 			<div className="w-full ">
 				<div className="header p-2 flex justify-between items-center  ">
 					<h1 className="font-semibold text-xl">Products</h1>
 					<div>
-						<button className="btn btn-primary btn-sm capitalize text-xs" onClick={()=> {router.push("/admin/product/add");}}>
+						<button
+							className="btn btn-primary btn-sm capitalize text-xs"
+							onClick={() => {
+								router.push("/admin/product/add");
+							}}
+						>
 							<MdOutlineAdd className="text-sm" /> Add Product
 						</button>
 					</div>
@@ -74,7 +87,10 @@ export default function page() {
 									<td>Quality Control Specialist</td>
 									<td>Blue</td>
 									<td>
-										<div className="btn btn-success btn-xs btn-outline" onClick={edit}>
+										<div
+											className="btn btn-success btn-xs btn-outline"
+											onClick={() => edit(10)}
+										>
 											<MdModeEditOutline />
 										</div>
 									</td>

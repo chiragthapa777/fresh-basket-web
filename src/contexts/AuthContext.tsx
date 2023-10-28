@@ -1,9 +1,10 @@
 "use client";
 
 import { AuthContextDataType } from "@/models/AuthContextType";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
+import jwt_decode from "jwt-decode";
 
 const initialState: AuthContextDataType = {
 	jwt: "",
@@ -27,32 +28,50 @@ export const AuthContextProvider = ({
 }: {
 	children: React.ReactNode;
 }) => {
-	const router = useRouter()
+	useEffect(() => {
+		console.log("Auth context loaded");
+		loadUser();
+		return () => {};
+	}, []);
+
+	const router = useRouter();
+
 	const [authContext, setAuthContext] =
 		useState<AuthContextDataType>(initialState);
-	const login = async () => {
-		setCookie("token", "test");
+
+	const login = async (jwt: string) => {
+		setCookie("token", jwt);
 		await loadUser();
 		router.push("/");
-		console.log("--------------------")
 	};
+
 	const loadUser = async () => {
-		if(!authContext.authenticated){
-			const token = getCookie("token");
+		if (!authContext.authenticated) {
+			const token: any = getCookie("token");
 			if (token) {
 				setAuthContext((prev: AuthContextDataType) => {
 					prev.authenticated = true;
+					prev.jwt = token;
+					try {
+						const decoded = jwt_decode(token);
+						prev.user = decoded;
+					} catch (error) {
+						logout();
+					}
+
 					return prev;
 				});
-			}else{
+			} else {
 				logout();
 			}
 		}
 	};
+
 	const logout = async () => {
 		setAuthContext(initialState);
 		router.push("/login");
 	};
+
 	const value = {
 		authContext,
 		login,

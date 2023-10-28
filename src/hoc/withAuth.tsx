@@ -1,4 +1,4 @@
-import React, { ComponentType, useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useAuthContext } from "../contexts/AuthContext"; // Import your AuthContext from the correct location
 import { useRouter } from "next/navigation";
 

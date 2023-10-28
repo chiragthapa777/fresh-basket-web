@@ -4,6 +4,11 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { useEffect } from "react";
 import "./globals.css";
+  import { ToastContainer } from "react-toastify";
+  
+
+  import "react-toastify/dist/ReactToastify.css";
+import ProgressProvider from "@/components/ProgressProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,8 +29,25 @@ export default function RootLayout({
 
 	return (
 		<html lang="en" data-theme="light">
-			<body className={inter.className}>
-				<AuthContextProvider>{children}</AuthContextProvider>
+			<body className="font-sans">
+				<AuthContextProvider>
+						<ToastContainer
+						position="bottom-center"
+						autoClose={5000}
+						hideProgressBar={false}
+						newestOnTop={false}
+						closeOnClick
+						rtl={false}
+						pauseOnFocusLoss
+						draggable
+						pauseOnHover
+						theme="light"
+					/>
+					<ProgressProvider>
+					{children}
+					</ProgressProvider>
+					
+				</AuthContextProvider>
 			</body>
 		</html>
 	);

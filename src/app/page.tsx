@@ -9,9 +9,6 @@ function Home() {
 	const router = useRouter();
 
 	useEffect(() => {
-		console.log(authContext);
-		loadUser();
-		console.log(authContext);
 		if (authContext.authenticated) {
 			router.push("/admin/dashboard");
 		} else {
