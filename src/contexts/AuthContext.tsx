@@ -16,7 +16,7 @@ const initialState: AuthContextDataType = {
 
 interface AuthContextType {
 	authContext: AuthContextDataType;
-	login: () => void;
+	login: (data:string) => void;
 	logout: () => void;
 	loadUser: () => void;
 }
@@ -54,6 +54,7 @@ export const AuthContextProvider = ({
 					prev.jwt = token;
 					try {
 						const decoded = jwt_decode(token);
+						console.log(decoded)
 						prev.user = decoded;
 					} catch (error) {
 						logout();
@@ -83,4 +84,4 @@ export const AuthContextProvider = ({
 	);
 };
 
-export const useAuthContext = () => useContext(AuthContext);
+export const useAuthContext = (): AuthContextType => useContext(AuthContext);

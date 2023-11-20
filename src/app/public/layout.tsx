@@ -35,7 +35,7 @@ export default function RootLayout({
 				</Link>
 			</nav>
 			{children}
-			<div className="btm-nav bg-base-100">
+			<div className="btm-nav bg-base-100 w-[500px] mx-auto">
 				<Link
 					href={"/public"}
 					className={`text-gray-500 ${

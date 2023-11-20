@@ -16,8 +16,8 @@ interface IDetailForm {
 	address: string;
 	street: string;
 	ward?: number;
-	preferences?: {value:string, label:string}[]
-	diseases?: {value:string, label:string}[]
+	preferences?: { value: string; label: string }[];
+	diseases?: { value: string; label: string }[];
 }
 
 export default function page() {
@@ -26,19 +26,20 @@ export default function page() {
 		handleSubmit,
 		formState: { errors, dirtyFields, touchedFields },
 		control,
+		setValue,
 	} = useForm<IDetailForm>({
-		defaultValues:{
-			name:"",
-			email:"",
-			contact:"",
-			district:"",
-			address:"",
-			street:"",
-			ward:0,
-			preferences:[],
-			diseases:[]
+		defaultValues: {
+			name: "",
+			email: "",
+			contact: "",
+			district: "",
+			address: "",
+			street: "",
+			ward: 0,
+			preferences: [],
+			diseases: [],
 		},
-		mode:'all'
+		mode: "all",
 	});
 	const [selectedOptions, setSelectedOptions] = useState([]);
 
@@ -46,8 +47,14 @@ export default function page() {
 		console.log(data, selectedOptions); // Replace with your form submission logic
 	};
 
-	const handleSelectChange = (selectedOptions: any) => {
-		setSelectedOptions(selectedOptions); // Update the selected values
+	const handleSelectChange = (selectedOptions: any): void => {
+		// Extract the values from the selected options
+		const selectedValues = selectedOptions.map(
+			(option: any) => option.value
+		);
+
+		// Update the form field value using react-hook-form's setValue
+		setValue("preferences", selectedValues);
 	};
 
 	return (
@@ -188,6 +195,7 @@ export default function page() {
 								// value={selectedOptions} // Set the selected values
 								// onChange={handleSelectChange} // Handle value changes/ Handle value changes
 								{...field}
+								// onChange={handleSelectChange}
 								isMulti // Enable multi-select
 								options={[
 									{ value: "disease1", label: "Disease 1" },
@@ -195,6 +203,8 @@ export default function page() {
 									{ value: "disease3", label: "Disease 3" },
 									{ value: "disease4", label: "Disease 4" },
 								]}
+								// getOptionValue={(option) => option.value}
+								// getOptionLabel={(option) => option.label}
 							/>
 						)}
 					/>

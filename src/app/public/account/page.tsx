@@ -85,7 +85,7 @@ function Home() {
 				</Link>
 			</div>
 			<p className="text-xs text-gray-400">Others</p>
-			<div className="flex flex-col">
+			<div className="flex flex-col mb-20">
 				<Link href={`/login`} className="flex p-2 my-1 rounded-lg justify-between items-center bg-base-100">
 					<div className="flex justify-center items-center text-lg">
 						<MdOutlineLogout className="mr-2" />

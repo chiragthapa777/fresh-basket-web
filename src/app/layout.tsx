@@ -1,14 +1,14 @@
 "use client";
-import { AuthContextProvider } from "@/contexts/AuthContext";
+import { AuthContextProvider, useAuthContext } from "@/contexts/AuthContext";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import "./globals.css";
-  import { ToastContainer } from "react-toastify";
-  
+import { ToastContainer } from "react-toastify";
 
-  import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css";
 import ProgressProvider from "@/components/ProgressProvider";
+import { usePathname } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,16 +22,27 @@ export default function RootLayout({
 }: {
 	children: React.ReactNode;
 }) {
+	const { authContext } = useAuthContext();
+	const pathname = usePathname();
 	useEffect(() => {
 		console.log("root layout");
 		return () => {};
 	}, []);
 
+	const isPublicRoute = useMemo(() => {
+		console.log(`pathname triggred`, pathname);
+		return pathname.startsWith("/public");
+	}, [pathname]);
+
 	return (
 		<html lang="en" data-theme="light">
-			<body className="font-sans">
+			<body
+				className={`font-sans ${
+					isPublicRoute && `max-w-[500px] mx-auto`
+				}`}
+			>
 				<AuthContextProvider>
-						<ToastContainer
+					<ToastContainer
 						position="bottom-center"
 						autoClose={5000}
 						hideProgressBar={false}
@@ -43,10 +54,7 @@ export default function RootLayout({
 						pauseOnHover
 						theme="light"
 					/>
-					<ProgressProvider>
-					{children}
-					</ProgressProvider>
-					
+					<ProgressProvider>{children}</ProgressProvider>
 				</AuthContextProvider>
 			</body>
 		</html>

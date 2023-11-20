@@ -78,8 +78,8 @@ export default function login() {
 		}
 	};
 	return (
-		<div className="w-screen h-screen flex justify-center items-center">
-			<div className="mb-40">
+		<div className="w-full h-screen flex justify-center items-center">
+			<div className="">
 				<h1 className="bold font-bold text-3xl text-primary text-center mb-8">
 					Fresh Basket
 				</h1>

@@ -8,20 +8,35 @@ import {
 } from "react-icons/md";
 import ProductFrom from "./ProductFrom";
 import Modal from "@/components/Modal";
+import { getProductsApi } from "@/services/product.service";
+import { ProductType } from "@/models/ProductType";
+import { Toaster } from "@/utils/Toast";
 
 export default function page() {
 	const router = useRouter();
-	const [result, setresult] = useState(null)
-	const [isOpen, setisOpen] = useState(false)
-	const edit = (id:number) =>{
-		setisOpen(true)
-		// router.push(`/product/edit/${id}`)
-	}
+	const [isOpen, setisOpen] = useState(false);
+	const [loading, setloading] = useState(false);
+	const [products, setProducts] = useState<ProductType[]>([]);
+	const edit = (id: number) => {
+		setisOpen(true);
+	};
+
+	const getProducts = async () => {
+		try {
+			setloading(true);
+			const data: ProductType[] = await getProductsApi({});
+			setProducts(data);
+		} catch (error) {
+			Toaster(error, "error");
+		} finally {
+			setloading(false);
+		}
+	};
 
 	useEffect(() => {
-	  console.log(result)
-	}, [result])
-	
+		getProducts();
+	}, []);
+
 	return (
 		<div>
 			<Modal
@@ -72,45 +87,50 @@ export default function page() {
 							{/* head */}
 							<thead className="bg-base-300/10">
 								<tr>
-									<th></th>
-									<th>Name</th>
-									<th>Job</th>
-									<th>Favorite Color</th>
-									<th></th>
+									<th className="w-1/12">S.No</th>
+									<th className="w-2/12">Name</th>
+									<th className="w-4/12">Desc</th>
+									<th className="w-4/12">Favorite Color</th>
+									<th className="w-1/12">Action</th>
 								</tr>
 							</thead>
 							<tbody className="bg-base-100">
-								{/* row 1 */}
-								<tr>
-									<th>1</th>
-									<td>Cy Ganderton</td>
-									<td>Quality Control Specialist</td>
-									<td>Blue</td>
-									<td>
-										<div
-											className="btn btn-success btn-xs btn-outline"
-											onClick={() => edit(10)}
-										>
-											<MdModeEditOutline />
-										</div>
-									</td>
-								</tr>
-								{/* row 2 */}
-								<tr>
-									<th>2</th>
-									<td>Hart Hagerty</td>
-									<td>Desktop Support Technician</td>
-									<td>Purple</td>
-									<td>Purple</td>
-								</tr>
-								{/* row 3 */}
-								<tr>
-									<th>3</th>
-									<td>Brice Swyre</td>
-									<td>Tax Accountant</td>
-									<td>Red</td>
-									<td>Red</td>
-								</tr>
+								{loading ? (
+									<tr>
+										{" "}
+										<td colSpan={5} className="text-center">
+											<span className="loading loading-spinner loading-lg"></span>
+										</td>
+									</tr>
+								) : products?.length > 0 ? (
+									products.map(
+										(
+											product: ProductType,
+											index: number
+										) => (
+											<tr key={product.id}>
+												<th>{index + 1}</th>
+												<td>{product.name}</td>
+												<td>{product.description}</td>
+												<td>
+													{product.healthCondition}
+												</td>
+												<td className="flex flex-row gap-1">
+													<div
+														className="btn btn-success btn-xs btn-outline"
+														onClick={() => edit(10)}
+													>
+														<MdModeEditOutline />
+													</div>
+												</td>
+											</tr>
+										)
+									)
+								) : (
+									<tr>
+										<td className="text-center" colSpan={5}>No Items Found</td>
+									</tr>
+								)}
 							</tbody>
 						</table>
 					</div>

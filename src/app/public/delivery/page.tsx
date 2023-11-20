@@ -1,13 +1,9 @@
 "use client";
 import OrderItem from "@/components/OrderItem";
-import PageLoader from "@/components/PageLoader";
-import ProductCard from "@/components/ProductCard";
 import { useAuthContext } from "@/contexts/AuthContext";
 import withAuth from "@/hoc/withAuth";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MdNavigateNext, MdOutlineShoppingBag, MdSearch } from "react-icons/md";
 function Home() {
 	const { authContext, loadUser } = useAuthContext();
 	const router = useRouter();
