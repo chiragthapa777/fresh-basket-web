@@ -89,8 +89,9 @@ export default function page() {
 								<tr>
 									<th className="w-1/12">S.No</th>
 									<th className="w-2/12">Name</th>
-									<th className="w-4/12">Desc</th>
-									<th className="w-4/12">Favorite Color</th>
+									<th className="w-2/12">Desc</th>
+									<th className="w-2/12">Health Condition</th>
+									<th className="w-2/12">Nutritions</th>
 									<th className="w-1/12">Action</th>
 								</tr>
 							</thead>
@@ -98,7 +99,7 @@ export default function page() {
 								{loading ? (
 									<tr>
 										{" "}
-										<td colSpan={5} className="text-center">
+										<td colSpan={6} className="text-center">
 											<span className="loading loading-spinner loading-lg"></span>
 										</td>
 									</tr>
@@ -112,8 +113,35 @@ export default function page() {
 												<th>{index + 1}</th>
 												<td>{product.name}</td>
 												<td>{product.description}</td>
-												<td>
-													{product.healthCondition}
+												<td className="gap-1">
+													{product.healthCondition.map(
+														(
+															item: string,
+															i: number
+														) => (
+															<div
+																key={i}
+																className="badge badge-primary badge-outline m-1"
+															>
+																{item}
+															</div>
+														)
+													)}
+												</td>
+												<td className="gap-1">
+													{product.nutritionData.map(
+														(
+															item: string,
+															i: number
+														) => (
+															<div
+																key={i}
+																className="badge badge-primary badge-outline m-1"
+															>
+																{item}
+															</div>
+														)
+													)}
 												</td>
 												<td className="flex flex-row gap-1">
 													<div
@@ -128,7 +156,9 @@ export default function page() {
 									)
 								) : (
 									<tr>
-										<td className="text-center" colSpan={5}>No Items Found</td>
+										<td className="text-center" colSpan={6}>
+											No Items Found
+										</td>
 									</tr>
 								)}
 							</tbody>
