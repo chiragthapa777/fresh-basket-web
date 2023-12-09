@@ -9,7 +9,7 @@ function Home() {
 	const router = useRouter();
 
 	useEffect(() => {
-		console.log(authContext);
+		console.log("===>",authContext);
 		if (authContext.authenticated) {
 			if (authContext.user?.role === "customer") {
 				router.push("/public");

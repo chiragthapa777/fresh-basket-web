@@ -4,7 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Router } from "next/router";
 import { useEffect } from "react";
-import { MdOutlineHome, MdOutlineMenu, MdOutlinePersonOutline, MdOutlineShoppingBag, MdSearch } from "react-icons/md";
+import {
+	MdOutlineHome,
+	MdOutlineMenu,
+	MdOutlinePersonOutline,
+	MdOutlineShoppingBag,
+	MdSearch,
+} from "react-icons/md";
 
 export const metadata: Metadata = {
 	title: "Create Next App",
@@ -35,7 +41,7 @@ export default function RootLayout({
 				</Link>
 			</nav>
 			{children}
-			<div className="btm-nav bg-base-100 w-[500px] mx-auto">
+			<div className="btm-nav bg-base-100 max-w-[500px] mx-auto">
 				<Link
 					href={"/public"}
 					className={`text-gray-500 ${

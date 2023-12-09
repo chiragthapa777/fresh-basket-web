@@ -1,5 +1,7 @@
 "use client";
+import { orderData } from "@/data";
 import withAuth from "@/hoc/withAuth";
+import { Toaster } from "@/utils/Toast";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import {
@@ -7,15 +9,26 @@ import {
 	MdOutlineKeyboardArrowLeft,
 	MdModeEditOutline,
 } from "react-icons/md";
+import OrderTableRow from "./OrderTableRow";
 
 function page() {
 	const router = useRouter();
-	const [result, setresult] = useState(null)
+	const [isOpen, setisOpen] = useState(false);
+	const [loading, setloading] = useState(false);
+	const [orders, setOrders] = useState<any[]>([]);
 
-	useEffect(() => {
-	  console.log(result)
-	}, [result])
-	
+	const getOrders = async () => {
+		try {
+			setOrders(orderData);
+		} catch (error) {
+			Toaster(error, "error");
+		} finally {
+			setloading(false);
+		}
+	};
+
+	useEffect(() => {}, []);
+
 	return (
 		<div>
 			<div className="flex">
@@ -43,7 +56,12 @@ function page() {
 				<div className="header p-2 flex justify-between items-center  ">
 					<h1 className="font-semibold text-xl">Orders</h1>
 					<div>
-						<button className="btn btn-primary btn-sm capitalize text-xs" onClick={()=> {router.push("/admin/order/add");}}>
+						<button
+							className="btn btn-primary btn-sm capitalize text-xs"
+							onClick={() => {
+								router.push("/admin/order/add");
+							}}
+						>
 							<MdOutlineAdd className="text-sm" /> Add Order
 						</button>
 					</div>
@@ -52,44 +70,20 @@ function page() {
 					<div className="overflow-x-auto">
 						<table className="table table-sm border drop-shadow-2xl rounded-2xl ">
 							{/* head */}
-							<thead className="bg-base-300/10">
+							<thead className="bg-base-300/50">
 								<tr>
-									<th></th>
-									<th>Name</th>
-									<th>Job</th>
-									<th>Favorite Color</th>
-									<th></th>
+									<th className="w-1/12">S.No</th>
+									<th className="w-1.5/12">Order Number</th>
+									<th className="w-1.5/12">Customer Name</th>
+									<th className="w-2/12">Order Time</th>
+									<th className="w-2/12">Subscription</th>
+									<th className="w-1.5/12">Status</th>
+									<th className="w-2/12">Total</th>
+									<th className="w-0.5/12">Detail</th>
 								</tr>
 							</thead>
 							<tbody className="bg-base-100">
-								{/* row 1 */}
-								<tr>
-									<th>1</th>
-									<td>Cy Ganderton</td>
-									<td>Quality Control Specialist</td>
-									<td>Blue</td>
-									<td>
-										<div className="btn btn-success btn-xs btn-outline" >
-											<MdModeEditOutline />
-										</div>
-									</td>
-								</tr>
-								{/* row 2 */}
-								<tr>
-									<th>2</th>
-									<td>Hart Hagerty</td>
-									<td>Desktop Support Technician</td>
-									<td>Purple</td>
-									<td>Purple</td>
-								</tr>
-								{/* row 3 */}
-								<tr>
-									<th>3</th>
-									<td>Brice Swyre</td>
-									<td>Tax Accountant</td>
-									<td>Red</td>
-									<td>Red</td>
-								</tr>
+								<OrderTableRow />
 							</tbody>
 						</table>
 					</div>

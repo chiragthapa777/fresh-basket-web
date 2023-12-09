@@ -38,7 +38,7 @@ export default function RootLayout({
 		<html lang="en" data-theme="light">
 			<body
 				className={`font-sans ${
-					isPublicRoute && `max-w-[500px] mx-auto`
+					isPublicRoute && `max-w-[500px] mx-auto shadow-lg`
 				}`}
 			>
 				<AuthContextProvider>
