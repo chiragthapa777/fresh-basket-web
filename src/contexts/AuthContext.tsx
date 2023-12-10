@@ -42,7 +42,7 @@ export const AuthContextProvider = ({
 
 	const login = async (jwt: string) => {
 		setCookie("token", jwt);
-		setAuthContext({...authContext, authenticated:true})
+		setAuthContext({ ...authContext, authenticated: true });
 		await loadUser();
 		router.push("/");
 	};
@@ -66,10 +66,12 @@ export const AuthContextProvider = ({
 						prev.jwt = token;
 						try {
 							prev.user = data;
-							localStorage.setItem(
-								"profile",
-								JSON.stringify(data)
-							);
+							if (typeof window !== undefined) {
+								localStorage.setItem(
+									"profile",
+									JSON.stringify(data)
+								);
+							}
 						} catch (error) {
 							logout();
 						}

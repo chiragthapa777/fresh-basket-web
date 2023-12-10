@@ -1,21 +1,36 @@
 "use client";
+import OverLayLoader from "@/components/OverLayLoader";
 import PageLoader from "@/components/PageLoader";
 import ProductCard from "@/components/ProductCard";
 import { useAuthContext } from "@/contexts/AuthContext";
 import withAuth from "@/hoc/withAuth";
+import { ProductType } from "@/models/ProductType";
+import { getProductsApi } from "@/services/product.service";
+import { Toaster } from "@/utils/Toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { MdNavigateNext, MdOutlineShoppingBag, MdSearch } from "react-icons/md";
 function Home() {
 	const { authContext, loadUser } = useAuthContext();
+	const [loading, setLoading] = useState(false);
+	const [products, setProducts] = useState<ProductType[]>([]);
 	const router = useRouter();
 
 	const getProduct = async () => {
-		
-	}
+		try {
+			const data = await getProductsApi({});
+			setProducts(data);
+		} catch (error) {
+			Toaster(error, "error");
+		} finally {
+			setLoading(false);
+		}
+	};
 
-	useEffect(() => {}, []);
+	useEffect(() => {
+		getProduct();
+	}, []);
 
 	return (
 		<div className="p-2">
@@ -45,26 +60,24 @@ function Home() {
 			>
 				<div className="flex">
 					<MdOutlineShoppingBag className="text-xl mr-1" />
-					Upcomming Delivery, 13 items
+					Upcomming Delivery
 				</div>
 				<MdNavigateNext className="text-xl mr-1" />
 			</Link>
 			<h1 className="text-primary font-bold mb-4 border-b border-primary">
 				Products
 			</h1>
-			<div className="grid grid-cols-2 gap-2 mb-24">
-				<ProductCard />
-				<ProductCard />
-				<ProductCard />
-				<ProductCard />
-				<ProductCard />
-				<ProductCard />
-				<ProductCard />
-				<ProductCard />
-				<ProductCard />
-				<ProductCard />
-				<ProductCard />
-			</div>
+			{loading ? (
+				<div className="w-full flex justify-center items-center">
+					<span className="loading loading-spinner loading-md"></span>
+				</div>
+			) : (
+				<div className="grid grid-cols-2 gap-2 mb-24 min-h-[100px]">
+					{products.map((product) => (
+						<ProductCard key={product?.id} product={product} />
+					))}
+				</div>
+			)}
 		</div>
 	);
 }

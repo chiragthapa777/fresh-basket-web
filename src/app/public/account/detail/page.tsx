@@ -17,7 +17,10 @@ import { useAuthContext } from "@/contexts/AuthContext";
 
 const animatedComponents = makeAnimated();
 
-type FormType = Omit<UserDetailModel, "createdAt" | "updatedAt">;
+type FormType = Omit<
+	UserDetailModel,
+	"createdAt" | "updatedAt" | "preference" | "healthCondition"
+> & { preference: any[]; healthCondition: any[] };
 
 const formSchema = z.object({
 	height: z.coerce
@@ -39,22 +42,19 @@ const formSchema = z.object({
 		district: z.string(),
 		ward: z.string(),
 	}),
-	preference: z
-		.array(z.object({ value: z.string(), label: z.string() }))
-		.nonempty(),
-	healthCondition: z
-		.array(z.object({ value: z.string(), label: z.string() }))
-		.nonempty(),
+	preference: z.array(z.any()).nonempty(),
+	healthCondition: z.array(z.any()).nonempty(),
 });
 export default function page() {
 	const [loading, setLoading] = useState(false);
-	const [profile, setProfile] = useState<UserModel | null>(
-		JSON.parse(localStorage.getItem("profile") || "{}")
-	);
+	const [profile, setProfile] = useState<UserModel | null>();
 	const { loadUser } = useAuthContext();
 	const router = useRouter();
 	const [isFormReadOnly, setFormReadOnly] = useState(false);
 	useEffect(() => {
+		if (typeof window !== undefined) {
+			setProfile(JSON.parse(localStorage.getItem("profile") || "{}"));
+		}
 		if (profile?.userDetail?.id) {
 			setFormReadOnly(true);
 		}
@@ -70,7 +70,7 @@ export default function page() {
 		defaultValues: {
 			height: profile?.userDetail?.height || "",
 			weight: profile?.userDetail?.weight || "",
-			dateOfBirth: new Date(profile?.userDetail?.dateOfBirth) || "",
+			dateOfBirth: profile?.userDetail?.dateOfBirth || "",
 			address: {
 				address: profile?.userDetail?.address?.address || "",
 				district: profile?.userDetail?.address?.district || "",
@@ -89,13 +89,6 @@ export default function page() {
 		mode: "all",
 	});
 	const { ref: dateInputRef } = register("dateOfBirth");
-	const openDatePicker = () => {
-		// Check if the ref is available
-		if (dateInputRef?.current) {
-			// Trigger the focus method to open the date picker
-			dateInputRef?.current?.focus();
-		}
-	};
 	const [selectedOptions, setSelectedOptions] = useState([]);
 
 	const onSubmit = async (data: any) => {
@@ -202,7 +195,7 @@ export default function page() {
 								</p>
 							)}
 						</div>
-						<div className="mb-4" onClick={openDatePicker}>
+						<div className="mb-4">
 							<label
 								htmlFor="dateOfBirth"
 								className="block text-sm font-medium text-gray-700"
@@ -244,13 +237,13 @@ export default function page() {
 								{...register("address.district", {
 									required: true,
 								})}
-								readOnly={isFormReadOnly}
 								id="district"
 								className={`mt-1 p-2 block w-full border rounded-md bg-base-100 ${
 									errors?.address?.district
 										? "border-red-500"
 										: "border-gray-300"
 								}`}
+								disabled={isFormReadOnly}
 							>
 								{NepalDistrict.map((name) => (
 									<option key={name} value={name}>
@@ -365,7 +358,7 @@ export default function page() {
 									closeMenuOnSelect={false}
 									components={animatedComponents}
 									{...field}
-									readOnly={isFormReadOnly}
+									isDisabled={isFormReadOnly}
 									isMulti // Enable multi-select
 									options={preferences.map((n) => {
 										return { value: n, label: n };
@@ -396,7 +389,7 @@ export default function page() {
 									closeMenuOnSelect={false}
 									components={animatedComponents}
 									{...field}
-									readOnly={isFormReadOnly}
+									isDisabled={isFormReadOnly}
 									isMulti // Enable multi-select
 									options={healthConditionArr.map((n) => {
 										return { value: n, label: n };
@@ -411,79 +404,6 @@ export default function page() {
 						</p>
 					)} */}
 					</div>
-					{/* <div className="mb-4">
-					<label className="block text-sm font-medium text-gray-700">
-						Diseases
-					</label>
-					<Controller
-						control={control}
-						as={<Select />}
-						options={[
-							{ value: "disease1", label: "Disease 1" },
-							{ value: "disease2", label: "Disease 2" },
-							{ value: "disease3", label: "Disease 3" },
-							{ value: "disease4", label: "Disease 4" },
-							{ value: "disease5", label: "Disease 5" },
-							{ value: "disease6", label: "Disease 6" },
-							{ value: "disease7", label: "Disease 7" },
-							{ value: "disease8", label: "Disease 8" },
-							{ value: "disease9", label: "Disease 9" },
-							// Add more disease options
-						]}
-						isMulti
-						name="diseases"
-					/>
-					<Controller
-						name="country"
-						control={control}
-						render={({ onChange, value, ref }) => (
-							<Select
-								options={[
-									{ value: "disease1", label: "Disease 1" },
-									{ value: "disease2", label: "Disease 2" },
-									{ value: "disease3", label: "Disease 3" },
-									{ value: "disease4", label: "Disease 4" },
-									{ value: "disease5", label: "Disease 5" },
-									{ value: "disease6", label: "Disease 6" },
-									{ value: "disease7", label: "Disease 7" },
-									{ value: "disease8", label: "Disease 8" },
-									{ value: "disease9", label: "Disease 9" },
-								]}
-								options={country}
-								value={country.find((c) => c.value === value)}
-								onChange={(val) => onChange(val.value)}
-								isMulti
-								name="diseases"
-							/>
-						)}
-						rules={{ required: true }}
-					/>
-					{errors.diseases && (
-						<p className="text-red-500 text-sm mt-1">
-							Can select upto 5 disease only
-						</p>
-					)}
-				</div>
-				<div className="mb-4">
-					<label className="block text-sm font-medium text-gray-700">
-						Vegetable Preference
-					</label>
-					<Select
-						{...register("vegetablePreference")}
-						options={[
-							{ value: "vegetable1", label: "Vegetable 1" },
-							{ value: "vegetable2", label: "Vegetable 2" },
-							// Add more vegetable options
-						]}
-						isMulti
-						name="vegetablePreference"
-					/>
-					{errors.vegetablePreference && (
-						<p className="text-red-500 text-sm mt-1">
-							Select between 1 and 5 preference
-						</p>
-					)}
-				</div> */}
 					<div className="mt-4">
 						<button
 							type="submit"
