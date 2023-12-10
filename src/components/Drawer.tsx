@@ -13,7 +13,7 @@ export default function Drawer({ children, isOpen, setIsOpen }: any) {
 			></div>
 			{/* Drawer */}
 			<div
-				className={`fixed inset-y-0 left-0 min-w-64 bg-base-100 shadow-lg transition-transform duration-300  ${
+				className={`fixed inset-y-0 left-0 min-w-64 bg-base-100 shadow-lg transition-transform duration-1000  ${
 					isOpen
 						? "transform translate-x-0"
 						: "transform -translate-x-full"

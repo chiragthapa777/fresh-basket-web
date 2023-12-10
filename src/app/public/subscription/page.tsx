@@ -1,30 +1,64 @@
 "use client";
-import OrderItem from "@/components/OrderItem";
-import PageLoader from "@/components/PageLoader";
-import ProductCard from "@/components/ProductCard";
+import OverLayLoader from "@/components/OverLayLoader";
 import { useAuthContext } from "@/contexts/AuthContext";
 import withAuth from "@/hoc/withAuth";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Subscribed } from "@/models/SubsModel";
+import { addUserSubs, getSubsApi } from "@/services/subsApi";
+import { MySwal } from "@/utils/Swal";
+import { Toaster } from "@/utils/Toast";
 import { useEffect, useState } from "react";
-import { MdNavigateNext, MdOutlineShoppingBag, MdSearch } from "react-icons/md";
 function Home() {
-	const { authContext, loadUser } = useAuthContext();
-	const router = useRouter();
-
-	const [activeTab, setActiveTab] = useState(0);
-
-	const tabs = [
-		{ label: "Next, July 10", content: "Content for Tab 1" },
-		{ label: "2033 jun 16", content: "Content for Tab 2" },
-		{ label: "2033 may 33", content: "Content for Tab 3" },
-	];
-
-	const handleTabClick = (index: number) => {
-		setActiveTab(index);
+	const [loading, setloading] = useState(false);
+	const { authContext } = useAuthContext();
+	const [subs, setSubs] = useState<Subscribed[]>([]);
+	const getSubs = async () => {
+		try {
+			setloading(true);
+			const data = await getSubsApi();
+			setSubs(data);
+		} catch (error) {
+			Toaster(error, "error");
+		} finally {
+			setloading(false);
+		}
 	};
 
-	useEffect(() => {}, []);
+	const addSubscription = async (sub: Subscribed) => {
+		try {
+			setloading(true);
+			const data = await addUserSubs({
+				userId: authContext.user?.id,
+				subsId: sub?.id,
+			});
+			console.log(
+				"🚀 ~ file: page.tsx:33 ~ addSubscription ~ data:",
+				data
+			);
+		} catch (error) {
+			Toaster(error, "error");
+		} finally {
+			setloading(false);
+		}
+	};
+
+	const addSubscriptionConfirm = async (data: Subscribed) => {
+		MySwal.fire({
+			title: "Do you want to add this subscription?",
+			showCancelButton: true,
+			confirmButtonText: "Save",
+		}).then(async (result) => {
+			/* Read more about isConfirmed, isDenied below */
+			if (result.isConfirmed) {
+				addSubscription(data);
+			} else if (result.isDenied) {
+				MySwal.fire("Changes are not saved", "", "info");
+			}
+		});
+	};
+
+	useEffect(() => {
+		getSubs();
+	}, []);
 
 	return (
 		<div className="p-2">
@@ -32,26 +66,22 @@ function Home() {
 				Choose A Subscription
 			</div>
 			<p className="mb-4">Subscription for daily items</p>
-			<div className="flex flex-col">
-				<div className="bg-primary flex w-full h-32 rounded-lg justify-center items-center text-primary-content font-bold text-center mb-4">
-					<div>
-						<p className="text-2xl">1 Month Subscription</p>
-						<p className="text-xl">Rs 3000</p>
-					</div>
+			<OverLayLoader loading={loading}>
+				<div className="flex flex-col">
+					{subs.map((d, i) => (
+						<div
+							onClick={() => addSubscriptionConfirm(d)}
+							key={i}
+							className="bg-primary flex w-full h-32 rounded-lg justify-center items-center text-primary-content font-bold text-center mb-4"
+						>
+							<div>
+								<p className="text-2xl">{d?.name}</p>
+								<p className="text-xl">{d?.subscriptionType}</p>
+							</div>
+						</div>
+					))}
 				</div>
-				<div className="bg-primary flex w-full h-32 rounded-lg justify-center items-center text-primary-content font-bold text-center mb-4">
-					<div>
-						<p className="text-2xl">1 Month Subscription</p>
-						<p className="text-xl">Rs 3000</p>
-					</div>
-				</div>
-				<div className="bg-primary flex w-full h-32 rounded-lg justify-center items-center text-primary-content font-bold text-center">
-					<div>
-						<p className="text-2xl">1 Month Subscription</p>
-						<p className="text-xl">Rs 3000</p>
-					</div>
-				</div>
-			</div>
+			</OverLayLoader>
 		</div>
 	);
 }

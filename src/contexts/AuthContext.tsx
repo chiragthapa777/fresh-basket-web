@@ -5,6 +5,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import jwt_decode from "jwt-decode";
+import { getProfile } from "@/services/user.api";
 
 const initialState: AuthContextDataType = {
 	jwt: "",
@@ -16,9 +17,9 @@ const initialState: AuthContextDataType = {
 
 interface AuthContextType {
 	authContext: AuthContextDataType;
-	login: (data:string) => void;
+	login: (data: string) => void;
 	logout: () => void;
-	loadUser: () => void;
+	loadUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | any>(initialState);
@@ -41,6 +42,7 @@ export const AuthContextProvider = ({
 
 	const login = async (jwt: string) => {
 		setCookie("token", jwt);
+		setAuthContext({...authContext, authenticated:true})
 		await loadUser();
 		router.push("/");
 	};
@@ -49,19 +51,37 @@ export const AuthContextProvider = ({
 		if (!authContext.authenticated) {
 			const token: any = getCookie("token");
 			if (token) {
-				setAuthContext((prev: AuthContextDataType) => {
-					prev.authenticated = true;
-					prev.jwt = token;
-					try {
-						const decoded = jwt_decode(token);
-						console.log(decoded)
-						prev.user = decoded;
-					} catch (error) {
-						logout();
-					}
-
-					return prev;
-				});
+				const decoded: any = jwt_decode(token);
+				if (!decoded?.id) {
+					return logout();
+				}
+				try {
+					const data = await getProfile();
+					console.log(
+						"🚀 ~ file: AuthContext.tsx:59 ~ loadUser ~ data:",
+						data
+					);
+					setAuthContext((prev: AuthContextDataType) => {
+						prev.authenticated = true;
+						prev.jwt = token;
+						try {
+							prev.user = data;
+							localStorage.setItem(
+								"profile",
+								JSON.stringify(data)
+							);
+						} catch (error) {
+							logout();
+						}
+						return prev;
+					});
+				} catch (error) {
+					console.log(
+						"🚀 ~ file: AuthContext.tsx:60 ~ loadUser ~ error:",
+						error
+					);
+					return logout();
+				}
 			} else {
 				logout();
 			}
@@ -69,6 +89,8 @@ export const AuthContextProvider = ({
 	};
 
 	const logout = async () => {
+		setCookie("token", "");
+		localStorage.setItem("profile", "");
 		setAuthContext(initialState);
 		router.push("/login");
 	};

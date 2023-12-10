@@ -9,7 +9,7 @@ export default function notfound() {
     useEffect(() => {
         const token = getCookie("token")
         if (token) {
-			router.push("/admin/dashboard");
+			router.push("/admin/customer");
 		} else {
 			router.push("/login");
 		}

@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { useEffect, useMemo } from "react";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
+import withReactContent from 'sweetalert2-react-content'
 
 import "react-toastify/dist/ReactToastify.css";
 import ProgressProvider from "@/components/ProgressProvider";

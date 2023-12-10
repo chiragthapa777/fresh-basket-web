@@ -6,15 +6,21 @@ const withAuth = (WrappedComponent: any, options?: any) => {
 	return () => {
 		const { authContext, loadUser } = useAuthContext();
 		const router = useRouter();
-		console.log("🚀 ~ file: withAuth.tsx:6 ~ withAuth ~ options:", options)
+		console.log("🚀 ~ file: withAuth.tsx:6 ~ withAuth ~ options:", options);
 
 		useEffect(() => {
-			loadUser();
+			loadUser().then(() => {
+				if (!authContext.authenticated) {
+					// Redirect to the login page
+					router.push("/login");
+				}
+				if(authContext?.user?.role==="customer"){
+					if(options?.role==="admin"){
+						router.push("/public")
+					}
+				}
+			});
 			// Check if the user is authenticated
-			if (!authContext.authenticated) {
-				// Redirect to the login page
-				router.push("/login");
-			}
 		}, [authContext.authenticated]);
 
 		// If the user is authenticated or after redirection, render the wrapped component

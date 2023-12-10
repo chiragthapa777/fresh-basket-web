@@ -11,8 +11,9 @@ import Modal from "@/components/Modal";
 import { getProductsApi } from "@/services/product.service";
 import { ProductType } from "@/models/ProductType";
 import { Toaster } from "@/utils/Toast";
+import withAuth from "@/hoc/withAuth";
 
-export default function page() {
+function page() {
 	const router = useRouter();
 	const [isOpen, setisOpen] = useState(false);
 	const [loading, setloading] = useState(false);
@@ -169,3 +170,5 @@ export default function page() {
 		</div>
 	);
 }
+
+export default withAuth(page, { role: "admin" });

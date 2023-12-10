@@ -1,21 +1,19 @@
 "use client";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { usePathname, useRouter } from "next/navigation";
 import {
-	MdDashboard,
-	MdInventory,
-	MdCategory,
 	MdOutlineAllInbox,
+	MdOutlineSupervisorAccount,
 	MdToc,
 } from "react-icons/md";
+import { PiMoneyBold } from "react-icons/pi";
 
 const iconsClasses = "text-xl ";
 
 const routes = [
 	{
-		title: "Dashboard",
-		icons: <MdDashboard className={iconsClasses} />,
-		link: "/admin/dashboard",
+		title: "Customer",
+		icons: <MdOutlineSupervisorAccount className={iconsClasses} />,
+		link: "/admin/customer",
 	},
 	{
 		title: "Products",
@@ -23,14 +21,9 @@ const routes = [
 		link: "/admin/product",
 	},
 	{
-		title: "Category",
-		icons: <MdCategory className={iconsClasses} />,
-		link: "/admin/category",
-	},
-	{
-		title: "Stocks",
-		icons: <MdInventory className={iconsClasses} />,
-		link: "/admin/stock",
+		title: "Subscriptions",
+		icons: <PiMoneyBold className={iconsClasses} />,
+		link: "/admin/user-subs",
 	},
 	{
 		title: "Orders",
@@ -41,6 +34,7 @@ const routes = [
 
 export default function SiderBar({ setIsOpen }: any) {
 	const router = useRouter();
+	const pathname = usePathname();
 	const handleNavigation = (path: string) => {
 		setIsOpen(false);
 		router.push(path);
@@ -50,7 +44,9 @@ export default function SiderBar({ setIsOpen }: any) {
 			{routes.map((route: any) => {
 				return (
 					<li
-						className=""
+						className={`${
+							pathname === route.link && "bg-slate-200 rounded-md"
+						}`}
 						key={route.title}
 						onClick={() => handleNavigation(route.link)}
 					>
