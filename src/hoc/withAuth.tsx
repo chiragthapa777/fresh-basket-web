@@ -10,13 +10,13 @@ const withAuth = (WrappedComponent: any, options?: any) => {
 
 		useEffect(() => {
 			loadUser().then(() => {
-				if (!authContext.authenticated) {
+				if (!authContext.authenticated || !authContext?.user?.role) {
 					// Redirect to the login page
 					router.push("/login");
 				}
-				if(authContext?.user?.role==="customer"){
-					if(options?.role==="admin"){
-						router.push("/public")
+				if (authContext?.user?.role === "customer") {
+					if (options?.role === "admin") {
+						router.push("/public");
 					}
 				}
 			});
