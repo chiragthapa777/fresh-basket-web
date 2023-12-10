@@ -52,13 +52,9 @@ export default function page() {
 	const router = useRouter();
 	const [isFormReadOnly, setFormReadOnly] = useState(false);
 	useEffect(() => {
-		if (typeof window !== undefined) {
-			setProfile(JSON.parse(localStorage.getItem("profile") || "{}"));
-		}
-		if (profile?.userDetail?.id) {
-			setFormReadOnly(true);
-		}
+		setProfile(JSON.parse(localStorage.getItem("profile") || "{}"));
 	}, []);
+
 	const {
 		register,
 		handleSubmit,
@@ -88,6 +84,45 @@ export default function page() {
 		},
 		mode: "all",
 	});
+	useEffect(() => {
+		// Set values in the form again when profile changes
+		if (profile?.userDetail?.id) {
+			setValue("height", profile?.userDetail?.height || "");
+			setValue("weight", profile?.userDetail?.weight || "");
+			setValue("dateOfBirth", profile?.userDetail?.dateOfBirth || "");
+			setValue(
+				"address.address",
+				profile?.userDetail?.address?.address || ""
+			);
+			setValue(
+				"address.district",
+				profile?.userDetail?.address?.district || ""
+			);
+			setValue(
+				"address.street",
+				profile?.userDetail?.address?.street || ""
+			);
+			setValue(
+				"address.ward",
+				profile?.userDetail?.address?.ward || undefined
+			);
+			setValue(
+				"preference",
+				profile?.userDetail?.preference?.map((d) => {
+					return { value: d, label: d };
+				}) || []
+			);
+			setValue(
+				"healthCondition",
+				profile?.userDetail?.healthCondition?.map((d) => {
+					return { value: d, label: d };
+				}) || []
+			);
+
+			// Set the form to read-only
+			setFormReadOnly(true);
+		}
+	}, [profile?.id]);
 	const { ref: dateInputRef } = register("dateOfBirth");
 	const [selectedOptions, setSelectedOptions] = useState([]);
 
@@ -408,6 +443,7 @@ export default function page() {
 						<button
 							type="submit"
 							className="bg-primary text-white px-4 py-2 rounded-md btn-block"
+							disabled={isFormReadOnly}
 						>
 							Submit
 						</button>

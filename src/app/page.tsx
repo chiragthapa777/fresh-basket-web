@@ -10,6 +10,10 @@ function Home() {
 
 	useEffect(() => {
 		if (authContext.authenticated) {
+			console.log(
+				"🚀 ~ file: page.tsx:13 ~ useEffect ~ authContext:",
+				authContext
+			);
 			if (authContext.user?.role === "customer") {
 				router.push("/public");
 			} else if (authContext.user?.role === "admin") {

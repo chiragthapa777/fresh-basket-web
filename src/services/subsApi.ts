@@ -28,3 +28,9 @@ export const addUserSubs = async (body: any) => {
 	const data = await axios.post(baseUrl + "/subscription/user-sub", body);
 	return data?.data;
 };
+
+export const getCurrSubs = async ():Promise<UserSubscriptionModel> => {
+	const axios: AxiosInstance = Axios;
+	const data = await axios.get(baseUrl + "/subscription/curr");
+	return data?.data;
+};

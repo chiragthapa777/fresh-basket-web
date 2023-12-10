@@ -1,11 +1,8 @@
 "use client";
-import OrderItem from "@/components/OrderItem";
-import PageLoader from "@/components/PageLoader";
-import ProductCard from "@/components/ProductCard";
 import { useAuthContext } from "@/contexts/AuthContext";
 import withAuth from "@/hoc/withAuth";
+import { UserModel } from "@/models/User.model";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
 	MdCalendarMonth,
@@ -17,23 +14,17 @@ import {
 	MdOutlinePlaylistAddCheck,
 	MdOutlineShoppingBag,
 	MdPermIdentity,
-	MdSearch,
 } from "react-icons/md";
 function Home() {
-	const { authContext, loadUser, logout } = useAuthContext();
-	const router = useRouter();
-
-	const [activeTab, setActiveTab] = useState(0);
-
-	const handleTabClick = (index: number) => {
-		setActiveTab(index);
-	};
+	const { logout } = useAuthContext();
+	const [profile, setProfile] = useState<UserModel | null>();
+	useEffect(() => {
+		setProfile(JSON.parse(localStorage.getItem("profile") || "{}"));
+	}, []);
 
 	const handleLogin = () => {
 		logout();
 	};
-
-	useEffect(() => {}, []);
 
 	return (
 		<div className="p-2">
@@ -44,12 +35,12 @@ function Home() {
 					className="h-28 w-28 rounded-full object-cover"
 				/>
 				<p className="font-bold text-2xl flex justify-start items-center">
-					Chirag Thapa{" "}
-					<MdOutlineDownloadDone className="ml-3 text-success" />
+					{profile?.name}
+					{profile?.userDetail?.id && (
+						<MdOutlineDownloadDone className="ml-3 text-success" />
+					)}
 				</p>
-				<p className="text-xs text-gray-400">
-					chiragthapa777@gmail.com
-				</p>
+				<p className="text-xs text-gray-400">{profile?.email}</p>
 			</div>
 			<p className="text-xs text-gray-400">Your Information</p>
 			<div className="flex flex-col mb-4">
