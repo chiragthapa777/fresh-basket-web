@@ -1,3 +1,4 @@
+import { OrderDetail } from "@/models/OrderType";
 import React, { useState } from "react";
 
 interface OrderItemProps {
@@ -7,7 +8,7 @@ interface OrderItemProps {
 	imageSrc: string;
 }
 
-const OrderItem = () => {
+const OrderItem = ({ detail }: { detail: OrderDetail }) => {
 	const [quantity, setQuantity] = useState(1);
 
 	const incrementQuantity = () => {
@@ -30,27 +31,33 @@ const OrderItem = () => {
 				/>
 			</div>
 			<div className="w-3/4 p-1">
-				<h3 className="text-lg font-semibold">{`Product Name`}</h3>
-				<p className="text-gray-600">${(100).toFixed(2)}</p>
+				<h3 className="text-lg font-semibold">
+					{detail?.product?.name}
+				</h3>
+				<p className="text-gray-600">${detail.price.toFixed(2)}</p>
 				<div className="flex justify-between items-center">
 					<div className="flex">
 						<button
 							className="bg-primary text-white px-2 py-1 rounded-l hover:bg-primary-dark"
 							onClick={decrementQuantity}
+							disabled
 						>
 							-
 						</button>
 						<span className="px-4 py-1 border-t border-b border-gray-300">
-							{quantity}
+							{detail.quantity}
 						</span>
 						<button
 							className="bg-primary text-white px-2 py-1 rounded-r hover:bg-primary-dark"
 							onClick={incrementQuantity}
+							disabled
 						>
 							+
 						</button>
 					</div>
-					<p className="text-gray-600 mr-4">Total : {100 * quantity}</p>
+					<p className="text-gray-600 mr-4">
+						Total : {detail.total}
+					</p>
 				</div>
 			</div>
 		</div>

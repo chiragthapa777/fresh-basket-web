@@ -1,18 +1,33 @@
 "use client";
+import { orderStatusObj } from "@/enums/orderStatusEnum";
+import { OrderType } from "@/models/OrderType";
+import moment from "moment";
 import React, { useState } from "react";
-	
-export default function OrderTableRow() {
+
+export default function OrderTableRow({
+	index,
+	data,
+	setOrder,
+}: {
+	index: number;
+	data: OrderType;
+	setOrder: (orderType: OrderType) => void;
+}) {
 	const [open, setopen] = useState(false);
 	return (
 		<>
 			<tr>
-				<th>3</th>
-				<td>Brice Swyre</td>
-				<td>Tax Accountant</td>
-				<td>Red</td>
-				<td>Red</td>
-				<td>Tax Accountant</td>
-				<td>Red</td>
+				<th>{index + 1}</th>
+				<td>{data?.orderNumber}</td>
+				<td>{data?.orderBy?.name}</td>
+				<td>{moment(data?.deliveryDate).format("yyyy-mm-DD")}</td>
+				<td>{data?.userSubscription?.subscriptionType}</td>
+				<td className="cursor-pointer " onClick={() => setOrder(data)}>
+					<div className="badge badge-secondary badge-outline">
+						{orderStatusObj[data?.status]}
+					</div>
+				</td>
+				<td>{data?.total}</td>
 				<td onClick={() => setopen(!open)}>open</td>
 			</tr>
 			{open && (
@@ -30,13 +45,15 @@ export default function OrderTableRow() {
 								</tr>
 							</thead>
 							<tbody>
-								<tr className="">
-									<td>Test</td>
-									<td>Test</td>
-									<td>Test</td>
-									<td>Test</td>
-									<td>Test</td>
-								</tr>
+								{data?.orderDetails?.map((d, i) => (
+									<tr className="">
+										<td>{i + 1}</td>
+										<td>{d?.product?.name}</td>
+										<td>{d?.price}</td>
+										<td>{d?.quantity}</td>
+										<td>{d?.total}</td>
+									</tr>
+								))}
 							</tbody>
 						</table>
 					</td>

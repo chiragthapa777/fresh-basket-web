@@ -1,33 +1,44 @@
 "use client";
-import OrderItem from "@/components/OrderItem";
+import Order from "@/components/Order";
 import { useAuthContext } from "@/contexts/AuthContext";
 import withAuth from "@/hoc/withAuth";
-import { useRouter } from "next/navigation";
+import { OrderType } from "@/models/OrderType";
+import { UserModel } from "@/models/User.model";
+import { getAllCurrOrders } from "@/services/orderApiService";
+import { Toaster } from "@/utils/Toast";
 import { useEffect, useState } from "react";
+
 function Home() {
 	const { authContext, loadUser } = useAuthContext();
-	const router = useRouter();
+	const [profile, setProfile] = useState<UserModel | null>();
+	useEffect(() => {
+		setProfile(JSON.parse(localStorage.getItem("profile") || "{}"));
+	}, []);
+	const [orders, setOrders] = useState<OrderType[]>([]);
+	const [loading, setLoading] = useState(false);
 
-	const [activeTab, setActiveTab] = useState(0);
-
-	const tabs = [
-		{ label: "Next, July 10", content: "Content for Tab 1" },
-		{ label: "2033 jun 16", content: "Content for Tab 2" },
-		{ label: "2033 may 33", content: "Content for Tab 3" },
-	];
-
-	const handleTabClick = (index: number) => {
-		setActiveTab(index);
+	const getOrders = async () => {
+		try {
+			setLoading(true);
+			const data = await getAllCurrOrders();
+			setOrders(data);
+		} catch (error) {
+			Toaster(error, "error");
+		} finally {
+			setLoading(false);
+		}
 	};
 
-	useEffect(() => {}, []);
+	useEffect(() => {
+		getOrders();
+	}, []);
 
 	return (
 		<div className="p-2">
 			<div className=" text-sm p-2 bg-primary text-primary-content rounded-md mb-4">
 				Upcomming Deliveries
 			</div>
-			<div className="flex w-full space-x-[1px] mb-4">
+			{/* <div className="flex w-full space-x-[1px] mb-4">
 				{tabs.map((tab, index) => (
 					<button
 						key={index}
@@ -41,8 +52,20 @@ function Home() {
 						{tab.label}
 					</button>
 				))}
-			</div>
-			<div className="grid grid-cols-1 gap-1 mb-24">
+			</div> */}
+			{loading ? (
+				<div className="w-full h-full flex justify-center items-center">
+
+					<span className="loading loading-spinner loading-md"></span>
+				</div>
+			) : (
+				<div className="w-full flex flex-col gap-2">
+					{orders.map((d) => (
+						<Order key={d.id} order={d} />
+					))}
+				</div>
+			)}
+			{/* <div className="grid grid-cols-1 gap-1 mb-24">
 				<OrderItem />
 				<OrderItem />
 				<OrderItem />
@@ -55,7 +78,7 @@ function Home() {
 				<OrderItem />
 				<OrderItem />
 				<OrderItem />
-			</div>
+			</div> */}
 		</div>
 	);
 }

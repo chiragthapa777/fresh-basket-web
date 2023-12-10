@@ -55,7 +55,7 @@ function Home() {
 					<MdNavigateNext />
 				</Link>
 				<Link
-					href={`/public/account/address`}
+					href={`/public/account/detail`}
 					className="flex p-2 my-1 rounded-lg justify-between items-center bg-base-100"
 				>
 					<div className="flex justify-center items-center text-lg">
@@ -68,22 +68,12 @@ function Home() {
 			<p className="text-xs text-gray-400">Orders</p>
 			<div className="flex flex-col">
 				<Link
-					href={`/public/account/orders`}
+					href={`/public/account/delivery`}
 					className="flex p-2 my-1 rounded-lg justify-between items-center bg-base-100"
 				>
 					<div className="flex justify-center items-center text-lg">
 						<MdOutlineShoppingBag className="mr-2" />
 						Orders
-					</div>
-					<MdNavigateNext />
-				</Link>
-				<Link
-					href={`/public/account/items`}
-					className="flex p-2 my-1 rounded-lg justify-between items-center bg-base-100"
-				>
-					<div className="flex justify-center items-center text-lg">
-						<MdOutlinePlaylistAddCheck className="mr-2" />
-						Selected Item
 					</div>
 					<MdNavigateNext />
 				</Link>
