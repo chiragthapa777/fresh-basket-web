@@ -96,7 +96,11 @@ function page() {
 								className="select select-bordered"
 								value={form.status}
 								onChange={(e) =>
-									setForm({ ...form, status: e.target.value })
+									setForm({
+										...form,
+										status: e.target
+											.value as OrderStausEnum,
+									})
 								}
 							>
 								{orderStatusArrObj.map((d) => (
